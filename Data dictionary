@@ -1,0 +1,47 @@
+
+############################################################### 
+## Data dictionary 
+############################################################### 
+
+Early disease contained clinical trials:  
+
+APHINITY, KATHERINE.  
+
+Advanced disease contained clinical trials:  
+
+MONARCH1, MONARCH2, MONARCH3, NEXTMONARCH, PALOMA3, TH3RESA.  
+
+Data acronym dictionary:  
+
+- N_IMPORTANT_DOMAIN: Number of important domains  
+- CAT_IMPORTANT_DOMAINS: Number of important domains (levels: 0, 1-2, 3+) 
+- ECOGPS: Eastern Cooperative Oncology Group Performance Score 
+- BMI: Body mass index 
+- ER: Estrogen-receptor status 
+- PR: Progesterone-receptor status 
+- MH_COUNT: Number of comorbidities 
+- STUDYID: Clinical trial used in analysis 
+- ARM: Arm of study in the trial 
+- STAGE: Disease stage 
+- PERMUTATION: Variable importance method used 
+
+############################################################### 
+## Outcome variables used in cox-regression and Kaplan Meier visualisations
+############################################################### 
+
+Time variables: 
+
+- Overall survival, SRVDY 
+- Invasive disease-free survival, IDFSDY  
+- Progression free survival, PFSDY 
+- Grade ≥3 adverse events,  TOXDY 
+- Serious adverse events, SERTOXDY 
+
+Outcomes assessed included: 
+
+- Overall survival, SRVCFL 
+- Invasive disease-free survival, IDFSCFL 
+- Progression-free survival, PFSCFL 
+- Grade ≥3 adverse events, TOXEVT 
+- Serious adverse events, SERTOXEVT 
+
