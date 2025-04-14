@@ -1,0 +1,49 @@
+###############################################################
+## Script used for the analysis of the project 
+###############################################################
+
+tbl1 = as.data.table(dataset)  
+# tbl1 is a data.table containing the pooled trials used in the analysis. See data acronym dictionary.
+
+###############################################################
+## Example cox-model used in the analysis 
+############################################################### 
+
+coxph(Surv(SRVDY/365.25*12, SRVCFL == "Event") ~ N_IMPORTANT_DOMAIN + SEX + AGE + RACE + ECOGPS + BMI + ER + PR + MH_COUNT + strata(STUDYID) + strata(ARM), data=tbl1[STAGE==’Advanced’] 
+# The above code provides the code used to generate analysis of overall survival in the advanced-stage cohort.  
+
+############################################################### 
+## Example Kaplan-Meier used in the analysis 
+############################################################### 
+ 
+km1 <- survfit(Surv(SRVDY / 365.25 * 12, SRVCFL == 'Event') ~ CAT_IMPORTANT_DOMAINS,  
+               data = tbl1[tbl1$STAGE == 'Advanced']) 
+ggsurvplot( 
+  km1, 
+  legend.title = "Poor domains (n)", 
+  legend.labs = c("0", "1-2", "3+"),   
+  xlab = "Time (months)", 
+  ylab = "Survival probability" 
+) 
+
+# The above code is an example to plot the associations on the number of important domains (0, 1-2, 3+) with overall survival in the advanced-stage cohort using Kaplan-Meier curves. 
+
+###############################################################
+## Example code used to construct the machine learning model 
+###############################################################
+
+set.seed(123) 
+Variable_importance_early = ranger(Global_health_status ~ ., data = tbl1[STAGE == 'Early'], importance = 'permutation') 
+
+# The above code fits a random forest model to examine associations between quality of life (Global_health_status) and each of the QLQ-C30 domains in the early-stage cohort
+# Variable importance estimated using permutation 
+
+pfun_early = function(Variable_importance_early, newdata) { 
+  predict(Variable_importance_early, data = newdata)$predictions } 
+X_early = data.frame(tbl1[sample(nrow(tbl1, 1000), !c('Global_health_status')]) 
+fshap_early = fastshap::explain(Variable_importance_early, x = X_early, nsim = 1000, pred_wrapper = pfun_early) 
+sv_early = shapviz::shapviz(fshap_early, x = X_early) 
+shapviz::sv_importance(sv_early, kind = 'bee') 
+
+# The above code generates a variable importance plot using SHAP values to visualise the contribution of each QLQ-C30 domain to predict quality of life
+# Example provided was used in the analysis for the early-stage cohort. 
